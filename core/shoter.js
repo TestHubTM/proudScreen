@@ -25,10 +25,22 @@ if (args.length === 1) {
 
     });
 }
-console.log(appArgs.url)
+var height;
 var page = require('webpage').create();
 page.viewportSize = appArgs.viewport.viewport;
 page.open(appArgs.url, function () {
-    page.render(appArgs.path + appArgs.viewport.name + '.png');
-    phantom.exit();
+    height = page.evaluate(function(){
+        return document.body.scrollHeight;
+    });
+    
+    page.viewportSize = {
+        width:appArgs.viewport.viewport.width,
+        height:height
+    };
+    page.open(appArgs.url, function () {
+        
+        page.render(appArgs.path + appArgs.viewport.name + '.png');
+        phantom.exit();
+    });
+
 });

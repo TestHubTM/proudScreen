@@ -1,2 +1,3 @@
 const SS = require("./core/screenshot");
-module.exports = SS;
+
+var ss = new SS("http://ghsabz.com","ss");

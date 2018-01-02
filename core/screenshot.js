@@ -62,8 +62,6 @@ class ScreenShot {
         //escape "
         viewport = viewport.replace(/"/g,'\\"');
 
-        console.log(`--viewport='${viewport}'`)
-
         exec(`phantomjs ./core/shoter.js --url=${this.url} --path=${this.path} --viewport='${viewport}'`, (err, stdout, stderr) => {
             if (err) {
                 return false;
