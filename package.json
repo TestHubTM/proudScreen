@@ -1,0 +1,29 @@
+{
+  "name": "proudscreen",
+  "version": "1.0.0",
+  "description": "A Tool For Taking ScreenShot of WebPges",
+  "main": "app.js",
+  "dependencies": {
+    "casperjs": "^1.1.4",
+    "phantomjs": "^2.1.7",
+    "yargs": "^10.0.3"
+  },
+  "devDependencies": {},
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/TestHubTM/proudScreen.git"
+  },
+  "keywords": [
+    "screenshot",
+    "shot"
+  ],
+  "author": "Pouya MozaffarMagham From TestHub",
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/TestHubTM/proudScreen/issues"
+  },
+  "homepage": "https://github.com/TestHubTM/proudScreen#readme"
+}
