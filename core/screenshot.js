@@ -1,6 +1,4 @@
-const {
-    exec
-} = require('child_process');
+const Shoter = require("./shoter");
 
 class ScreenShot {
 
@@ -58,17 +56,7 @@ class ScreenShot {
 
     takeScreenShot(viewport) {
 
-        viewport = JSON.stringify(viewport);
-        //escape "
-        viewport = viewport.replace(/"/g,'\\"');
-
-        exec(`phantomjs ./core/shoter.js --url=${this.url} --path=${this.path} --viewport='${viewport}'`, (err, stdout, stderr) => {
-            if (err) {
-                return false;
-            }
-            console.log(stdout)
-            return true;
-        });
+        new Shoter(viewport,this.url,this.path);
         
     }
 

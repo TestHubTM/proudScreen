@@ -1,49 +1,76 @@
-var system = require('system');
-var args = system.args;
-var appArgs = {};
-if (args.length === 1) {
-    console.log('Try to pass some arguments when invoking this script!');
-} else {
+var webdriver = require('selenium-webdriver'),
+    By = webdriver.By,
+    until = webdriver.until;
 
-    var pattern = /--(.+?)=((?:[']?|))(.+)\2/;
-    var result = [];
 
-    args.forEach(function (arg, i) {
+class Shoter {
+    constructor(viewport, url, path) {
 
-        result = pattern.exec(arg);
+        var driver = new webdriver.Builder().withCapabilities({
+            'browserName': 'firefox',
+            acceptSslCerts: true,
+            acceptInsecureCerts: true
+        }).build();
+        driver.manage().window().setSize(viewport.viewport.width, viewport.viewport.height);
 
-        if (result != null) {
+        driver.get(url).then(function () {
 
-            if (result[1] == "url") {
-                appArgs.url = result[3];
-            } else if (result[1] == "path") {
-                appArgs.path = result[3];
-            } else if (result[1] == "viewport") {
-                appArgs.viewport = JSON.parse(result[3]);
-            }
-        }
+            driver.executeScript("return document.getElementsByTagName('body')[0].scrollHeight").then((height) => {
 
-    });
+                driver.executeScript("window.scrollTo(0,document.body.scrollHeight)");
+
+                var viewPortHeight = viewport.viewport.height;
+                var times = parseInt(height / viewPortHeight);
+                for (let i = 0; i < times; i++) {
+                    driver.executeScript("window.scrollTo(0," + viewPortHeight * i + ")");
+                    driver.sleep(1500).then(function () {
+                        driver.takeScreenshot(true).then(
+                            function (image, err) {
+                                require('fs').writeFile(`${path}out-${i}.png`, image, 'base64', function (err) {
+                                    console.log(err);
+                                });
+                            }
+                        );
+                    })
+                }
+
+                //last screen shot:)
+
+                var remaining = height - (times * viewPortHeight);
+
+                driver.manage().window().setSize(viewport.viewport.width, remaining);
+
+                driver.executeScript("window.scrollTo(0," + height + ")");
+                driver.sleep(1500).then(function () {
+                    driver.takeScreenshot(true).then(
+                        function (image, err) {
+                            require('fs').writeFileSync(`${path}out-${times}.png`, image, 'base64', function (err) {
+                                console.log(err);
+                            });
+
+
+                            var Merger = require("./merger");
+
+                            new Merger(times + 1,path);
+
+                        }
+
+
+
+                    );
+                })
+
+
+
+
+            })
+
+        });
+
+
+
+
+    }
 }
-var height;
-var page = require('webpage').create();
-page.viewportSize = appArgs.viewport.viewport;
-page.open(appArgs.url, function () {
-    height = page.evaluate(function(){
-        return document.body.scrollHeight;
-    });
-    
-    page.viewportSize = {
-        width:appArgs.viewport.viewport.width,
-        height:height
-    };
-    page.open(appArgs.url, function () {
-        
-        setTimeout(function(){
-            page.render(appArgs.path + appArgs.viewport.name + '.png');
-            phantom.exit();
-        },1000)
 
-    });
-
-});
+module.exports = Shoter;
