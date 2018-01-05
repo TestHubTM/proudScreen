@@ -66,6 +66,7 @@ class ScreenShot {
             if (err) {
                 return false;
             }
+            console.log(stdout)
             return true;
         });
         

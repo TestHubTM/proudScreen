@@ -1,3 +1,5 @@
 const SS = require("./core/screenshot");
 
-module.exports = SS;
+new SS("http://www.ghsabz.ir/","ss");
+
+// module.exports = SS;

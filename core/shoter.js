@@ -39,8 +39,11 @@ page.open(appArgs.url, function () {
     };
     page.open(appArgs.url, function () {
         
-        page.render(appArgs.path + appArgs.viewport.name + '.png');
-        phantom.exit();
+        setTimeout(function(){
+            page.render(appArgs.path + appArgs.viewport.name + '.png');
+            phantom.exit();
+        },1000)
+
     });
 
 });
