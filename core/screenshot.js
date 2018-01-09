@@ -1,5 +1,5 @@
 const Shoter = require("./shoter");
-
+const fs = require("fs");
 class ScreenShot {
 
     constructor(url, path) {
@@ -45,19 +45,34 @@ class ScreenShot {
             }
         ];
 
+        if(!fs.existsSync(path)){
+            fs.mkdirSync(path);
+        }
+
         for (let viewport of this.viewports) {
 
-            this.takeScreenShot(viewport);
+            let tempPath = "";
+            
+            tempPath += path +"/" + viewport.name + "/";
+
+            if (!fs.existsSync(tempPath)) {
+                fs.mkdirSync(tempPath)
+            }
+
+            this.takeScreenShot(viewport,tempPath);
+
+            fs.writeFileSync(tempPath+"readme.txt",`#proudScreen: width:${viewport.viewport.width}px\n height:${viewport.viewport.height}px, name:${viewport.name}, site:${this.url} #endOfFile;)`)
 
         }
+        
 
 
     }
 
-    takeScreenShot(viewport) {
+    takeScreenShot(viewport,path) {
 
-        new Shoter(viewport,this.url,this.path);
-        
+        new Shoter(viewport, this.url, path);
+
     }
 
 

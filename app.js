@@ -1,3 +1,5 @@
 const SS = require("./core/screenshot");
 
-module.exports = SS;
+new SS("http://github.com","out");
+
+// module.exports = SS;
