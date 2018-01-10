@@ -7,7 +7,7 @@ class Shoter {
     constructor(viewport, url, path) {
 
 
-        var driver = new webdriver.Builder().withCapabilities({
+        var driver = this.driver = new webdriver.Builder().withCapabilities({
             'browserName': 'firefox',
             acceptSslCerts: true,
             acceptInsecureCerts: true
@@ -15,7 +15,7 @@ class Shoter {
 
         driver.manage().window().setSize(viewport.viewport.width, viewport.viewport.height + 78);
 
-        driver.get(url).then(function () {
+        driver.get(url).then(()=>{
 
             driver.executeScript("var css = 'body{overflow:hidden!important;}';var style = document.createElement('style');style.innerHTML = css;var head = document.getElementsByTagName('head')[0].appendChild(style);var body = document.body,html = document.documentElement;var height = Math.max( body.scrollHeight, body.offsetHeight, html.clientHeight, html.scrollHeight, html.offsetHeight );return height;").then((height) => {
 
@@ -23,7 +23,13 @@ class Shoter {
 
                 var viewPortHeight = viewport.viewport.height;
                 var times = parseInt(height / viewPortHeight);
+
+                this.scrollTheWindow(times,viewPortHeight);
+
                 for (let i = 0; i < times; i++) {
+                    if(i==1){
+                        this.injectFixedHideElementsScript();
+                    }
                     driver.executeScript("window.scrollTo(0," + viewPortHeight * i + ")");
                     driver.sleep(1500).then(function () {
                         driver.takeScreenshot(true).then(
@@ -81,6 +87,22 @@ class Shoter {
         driver.quit();
 
     }
+
+    scrollTheWindow(times,viewPortHeight){
+
+        for (let i = 0; i < times; i++) {
+            this.driver.executeScript("window.scrollTo(0," + viewPortHeight * i + ")");
+            this.driver.sleep(1500);
+        }
+
+    }
+
+    injectFixedHideElementsScript(){
+        this.driver.executeScript("var divs = document.getElementsByTagName('div');for(let i=0;i<divs.length;i++){if(window.getComputedStyle(divs[i],null).getPropertyValue('position') == 'fixed'){divs[i].style.display = 'none'}};");
+        this.driver.executeScript("var divs = document.getElementsByTagName('nav');for(let i=0;i<divs.length;i++){if(window.getComputedStyle(divs[i],null).getPropertyValue('position') == 'fixed'){divs[i].style.display = 'none'}};");
+        this.driver.executeScript("var divs = document.getElementsByTagName('header');for(let i=0;i<divs.length;i++){if(window.getComputedStyle(divs[i],null).getPropertyValue('position') == 'fixed'){divs[i].style.display = 'none'}};");
+    }
+
 }
 
 module.exports = Shoter;

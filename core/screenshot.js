@@ -40,7 +40,7 @@ class ScreenShot {
                 'name': 'desktop-standard',
                 'viewport': {
                     width: 1280,
-                    height: 1024
+                    height: 900
                 }
             }
         ];
